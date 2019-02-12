@@ -1,6 +1,7 @@
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
+#include "fstream"
 #include<iostream>
 using namespace cv;
 using namespace std;
@@ -57,4 +58,22 @@ void load_frames_to_vector(string folder,vector<Mat>& frames,vector<string> name
     {
         cout<<"No access to folder..."<<endl;
     }
+}
+
+void export_mat_excel(Mat img, string name)
+{
+    ofstream myfile;
+    myfile.open(name+".csv");
+    for(int i=0; i<img.rows; i++)
+    {
+        for(int j=0; j<img.cols; j++)
+        {
+            myfile << ((Scalar)img.at<int>(i, j))[0];
+            myfile << ",";
+        }
+        myfile << "\n";
+
+    }
+    myfile.close();
+    //waitKey(5000);
 }

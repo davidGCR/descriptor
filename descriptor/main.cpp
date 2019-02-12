@@ -31,7 +31,7 @@ int main(int argc, const char * argv[]) {
     // insert code here...
     int step = 5;
     // string path = "/Users/davidchoqueluqueroman/Desktop/CURSOS-MASTER/IMAGENES/descriptor/data/person23.mp4";
-    string path = "data/person23.mp4";
+    string path = "data/person23_running_d4_uncomp.avi";
     VideoCapture capture;
     capture.open(path);
     if (!capture.isOpened())
@@ -42,7 +42,7 @@ int main(int argc, const char * argv[]) {
     int videoHeight = (capture.get(CV_CAP_PROP_FRAME_HEIGHT));
     Mat image;
     vector<Mat> frames;
-    for (int64 frameStep = 0; frameStep < videoLength; frameStep += step) {
+    for (int64 frameStep = 20; frameStep < videoLength; frameStep += step) {
         capture.set(CV_CAP_PROP_POS_FRAMES, frameStep);
         capture.read((image));
         if (image.empty())
@@ -92,6 +92,8 @@ int main(int argc, const char * argv[]) {
     osf.calculateOpticalFlow(frames);
 
     cout<<"total matirces pair: "<<osf.angles_magnitudes.size()<<endl;
+    export_mat_excel(osf.angles_magnitudes[1].angles, "angles");
+    export_mat_excel(osf.angles_magnitudes[1].magnitudes, "magnitudes");
 
 
     // setOpticalFlowData(frames);

@@ -161,12 +161,12 @@ void OpticalFlowSet::create_angles_magnitudes_from_LK(vector<Point2f> &vecPoints
 
         // cout<<"raw_angle: "<<angle<<", valAngle: "<<valAngle<<", magnitude: "<<magnitude<<endl;
 
-        // if (logQuantization == 1){
-        //     valMagnitude = floor(log2(magnitude));
-        // }
-        // else{
-        //     valMagnitude = static_cast<int>(floor(magnitude / (maxMagnitude /nBinsMagnitude)));
-        // }
+         if (logQuantization == 1){
+             valMagnitude = floor(log2(magnitude));
+         }
+         else{
+             valMagnitude = static_cast<int>(floor(magnitude / (maxMagnitude /nBinsMagnitude)));
+         }
         
         if (valMagnitude < 0){// e.g., log2(0)
             valMagnitude = 0;  // send to the first bin
@@ -178,7 +178,7 @@ void OpticalFlowSet::create_angles_magnitudes_from_LK(vector<Point2f> &vecPoints
         y = initial_positions[i].y;
         x = initial_positions[i].x;
 
-        cout<<"angle: "<<valAngle<<", magnitude: "<<valMagnitude<<endl;
+        //cout<<"angle: "<<valAngle<<", magnitude: "<<valMagnitude<<endl;
         AMmat.angles(y, x) = valAngle;
         AMmat.magnitudes(y, x) = valMagnitude;
     }
