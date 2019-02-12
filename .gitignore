@@ -1,0 +1,7 @@
+*.zip
+*.py
+*.csv
+* /.ipynb_checkpoints
+*.pkl
+*.ipynb_checkpoints/
+*.xcodeproj
