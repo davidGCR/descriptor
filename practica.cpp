@@ -33,6 +33,19 @@ int main()
 	Haralick har;
 	Mat haralick_features = har.calculate(co_ocurrence_matrix);
 	cout << haralick_features.at<float>(0,0) << endl;
+	cout << haralick_features.at<float>(0,1) << endl;
+	cout << haralick_features.at<float>(0,2) << endl;
+	cout << haralick_features.at<float>(0,3) << endl;
+	cout << haralick_features.at<float>(0,4) << endl;
+	cout << haralick_features.at<float>(0,5) << endl;
+	cout << haralick_features.at<float>(0,6) << endl;
+	cout << haralick_features.at<float>(0,7) << endl;
+	cout << haralick_features.at<float>(0,8) << endl;
+	cout << haralick_features.at<float>(0,9) << endl;
+	cout << haralick_features.at<float>(0,10) << endl;
+	cout << haralick_features.at<float>(0,11) << endl;
+	cout << haralick_features.at<float>(0,12) << endl;
+	cout << haralick_features.at<float>(0,13) << endl;
 
 	export_mat_excel(co_magnitude, "magnitude");
 	export_mat_excel(co_ocurrence_matrix, "co_magnitude");
