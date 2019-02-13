@@ -77,3 +77,19 @@ void export_mat_excel(Mat img, string name)
     myfile.close();
     //waitKey(5000);
 }
+
+void export_listmat_excel(vector<Mat> list, string name)
+{
+    ofstream myfile;
+    myfile.open(name+".csv");
+    for(int i=0; i<list.size(); i++)
+    {
+        for(int j=0; j<list[i].cols; j++)
+        {
+            myfile << ((Scalar)list[i].at<int>(0, j))[0];
+            myfile << "\n";
+        }
+    }
+    myfile.close();
+   
+}

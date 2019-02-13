@@ -114,6 +114,7 @@ int main(int argc, const char * argv[]) {
     Mat sampling_angles, sampling_magnitudes;
 
     generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes[3].angles, osf.angles_magnitudes[3].magnitudes,size_frame);
+    export_mat_excel(osf.angles_magnitudes[3].angles, "cuboid_angle");
 
     cout << listCuboidAngles.size() << endl;
     cout << listCuboidMagnitudes.size() << endl;
@@ -125,6 +126,7 @@ int main(int argc, const char * argv[]) {
 //Step 3 Calculate de co_ocurrence matrix of angles and magnitudes
     for(int i=0; i<listCuboidAngles.size(); i++)
     {
+        cout << "co_ocurrence" << endl;
         Mat co_ocurrence_angle = co_ocurrence_magnitud(listCuboidAngles[i], orientation);
         //export_mat_excel(co_ocurrence_angle, "co_ocurrence_angle" );
         Mat co_ocurrence_magnitude = co_ocurrence_magnitud(listCuboidMagnitudes[i], orientation);
@@ -135,7 +137,7 @@ int main(int argc, const char * argv[]) {
 
         //export_mat_excel(listCuboidAngles[0], "cuboid_angle");
         //export_mat_excel(co_ocurrence_angle_n,"co_ocurrence_angle_n");
-
+        cout << "haralick" << endl;
 //Step 4 Extract haralick features
         Mat haralick_angles = har.calculate(co_ocurrence_angle_n);
         Mat haralick_magnitudes = har.calculate(co_ocurrence_magnitude_n);
