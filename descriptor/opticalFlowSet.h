@@ -95,7 +95,7 @@ void OpticalFlowSet::calculateOpticalFlow(vector<Mat>& frames) {
                     //calcular angulos y magnitudes 
                     for(int i = 0; i < points[0].size(); i++)
                     {
-                        cout<<"pixel1: "<<points[0][i]<<"pixel2:"<<points[1][i]<<endl;
+                        //cout<<"pixel1: "<<points[0][i]<<"pixel2:"<<points[1][i]<<endl;
                     }
                     
                     create_angles_magnitudes_from_LK(points[1], points[0], angles_magni);
