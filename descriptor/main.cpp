@@ -36,10 +36,11 @@ Mat normalize_matriz(Mat matriz);
 int main(int argc, const char * argv[]) {
     // insert code here...
     int step = 5;
-    //string video_name = "23_running_d4";
-    string video_name = "15_walking_d1";
-    string activity = "walking";
-    int id_activity = 4;
+    string video_name = "15_boxing_d4";
+    //string activity = "running_23";
+    string activity = "boxing_23";
+    //string video_name = "15_walking_d1";
+    int id_activity = 5;
     // string path = "/Users/davidchoqueluqueroman/Desktop/CURSOS-MASTER/IMAGENES/descriptor/data/person23.mp4";
     //string path = "data/person15_running_d1_uncomp.avi";
     //string path = "data/handclapping";
@@ -110,7 +111,8 @@ int main(int argc, const char * argv[]) {
     //export_mat_excel(osf.angles_magnitudes[1].angles, "angles");
     //export_mat_excel(osf.angles_magnitudes[1].magnitudes, "magnitudes");
 
-
+    vector<Mat> list_haralick_angles;
+    vector<Mat> list_haralick_magnitudes;
 //Seccion of Haralick
     Haralick har;
     int size_frame = 20;
@@ -121,37 +123,38 @@ int main(int argc, const char * argv[]) {
     Mat zeros = Mat::zeros(size_frame, size_frame, CV_32FC1);
     Mat sampling_angles, sampling_magnitudes;
 
-    generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes[3].angles, osf.angles_magnitudes[3].magnitudes,size_frame);
-    export_mat_excel(osf.angles_magnitudes[3].angles, "cuboid_angle");
+    for(int i=0; i<osf.angles_magnitudes.size(); i++)
+        generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes[i].angles, osf.angles_magnitudes[i].magnitudes,size_frame);
+   // export_mat_excel(osf.angles_magnitudes[3].angles, "cuboid_angle");
 
-    cout << listCuboidAngles.size() << endl;
-    cout << listCuboidMagnitudes.size() << endl;
-
-    int orientation = 0;
-
-    vector<Mat> list_haralick_angles;
-    vector<Mat> list_haralick_magnitudes;
+    //cout << listCuboidAngles.size() << endl;
+    //cout << listCuboidMagnitudes.size() << endl;
+    
 //Step 3 Calculate de co_ocurrence matrix of angles and magnitudes
     for(int i=0; i<listCuboidAngles.size(); i++)
     {
+        //Create orientation
+        for(int orientation = 0; orientation<4; orientation++)
+        {
         //cout << "co_ocurrence" << endl;
-        Mat co_ocurrence_angle = co_ocurrence_magnitud(listCuboidAngles[i], orientation);
-        export_mat_excel(co_ocurrence_angle, "co_ocurrence_angle" );
-        Mat co_ocurrence_magnitude = co_ocurrence_magnitud(listCuboidMagnitudes[i], orientation);
+            Mat co_ocurrence_angle = co_ocurrence_magnitud(listCuboidAngles[i], orientation);
+            export_mat_excel(co_ocurrence_angle, "co_ocurrence_angle" );
+            Mat co_ocurrence_magnitude = co_ocurrence_magnitud(listCuboidMagnitudes[i], orientation);
 
 //Normalize matrix to input to haralick
-        Mat co_ocurrence_angle_n = normalize_matriz(co_ocurrence_angle);
-        Mat co_ocurrence_magnitude_n = normalize_matriz(co_ocurrence_magnitude);
+            Mat co_ocurrence_angle_n = normalize_matriz(co_ocurrence_angle);
+            Mat co_ocurrence_magnitude_n = normalize_matriz(co_ocurrence_magnitude);
 
         //export_mat_excel(listCuboidAngles[0], "cuboid_angle");
         //export_mat_excel(co_ocurrence_angle_n,"co_ocurrence_angle_n");
         //cout << "haralick" << endl;
 //Step 4 Extract haralick features
-        Mat haralick_angles = har.calculate(co_ocurrence_angle_n);
-        Mat haralick_magnitudes = har.calculate(co_ocurrence_magnitude_n);
+            Mat haralick_angles = har.calculate(co_ocurrence_angle_n);
+            Mat haralick_magnitudes = har.calculate(co_ocurrence_magnitude_n);
 
-        list_haralick_angles.push_back(haralick_angles);
-        list_haralick_magnitudes.push_back(haralick_magnitudes);   
+            list_haralick_angles.push_back(haralick_angles);
+            list_haralick_magnitudes.push_back(haralick_magnitudes);   
+        }
     }
 
     //print_haralick_features(haralick_angles);

@@ -86,8 +86,10 @@ void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, s
     {
         for(int j=0; j<list_angles[i].cols; j++)
         {
-            if(list_angles[i].at<float>(0, j) != 0)
+            //-4.34882e-06
+            if(list_angles[i].at<float>(0, j) != 0 && list_angles[i].at<float>(0, j) != list_magnitudes[i].at<float>(0, j))
             {
+                //cout << ((Scalar)list_angles[i].at<float>(0, j))[0]*1000 << endl;
                 myfile << ((Scalar)list_angles[i].at<float>(0, j))[0];
                 myfile << ","<< ((Scalar)list_magnitudes[i].at<float>(0, j))[0];
                 myfile << "," << activity;
