@@ -35,6 +35,7 @@ public:
     void select_important_pixels(vector<Point2f> &vecPoints, Mat frameB, Mat frameA, int thr);
     void create_angles_magnitudes_from_LK(vector<Point2f> &vecPoints,vector<Point2f> &initial_positions,Angles_Magnitude & AMmat);
     void plot_optical_flow(Mat input_img, Mat output_img, vector<Point2f> points1,vector<Point2f> points2);
+    void plot_angles_magnitudes(int index);
 };
 
 
@@ -59,6 +60,41 @@ void OpticalFlowSet::plot_optical_flow(Mat input_img, Mat output_img, vector<Poi
     }
     imshow("optical flow",output_img);
     waitKey(1500);
+}
+void OpticalFlowSet::plot_angles_magnitudes(int index){
+    Mat img_angles = angles_magnitudes[index].angles;
+    Mat img_magnitudes = angles_magnitudes[index].magnitudes; 
+    double min = -1;
+    double max = 8;
+
+/********************* angulos ***********************/
+    cv::minMaxIdx(img_angles, &min, &max);
+    cv::Mat adjMap_angles;
+    // expand your range to 0..255. Similar to histEq();
+    img_angles.convertTo(adjMap_angles,CV_8UC1, 255 / (max-min), -255*min/(max-min)); 
+    // this is great. It converts your grayscale image into a tone-mapped one, 
+    // much more pleasing for the eye
+    // function is found in contrib module, so include contrib.hpp 
+    // and link accordingly
+    cv::Mat falseColorsMap_angles;
+    applyColorMap(adjMap_angles, falseColorsMap_angles, cv::COLORMAP_JET);
+
+    /********************* magnitudes ***********************/
+    cv::minMaxIdx(img_magnitudes, &min, &max);
+    cv::Mat adjMap_magnitudes;
+    // expand your range to 0..255. Similar to histEq();
+    img_angles.convertTo(adjMap_magnitudes,CV_8UC1, 255 / (max-min), -255*min/(max-min)); 
+    // this is great. It converts your grayscale image into a tone-mapped one, 
+    // much more pleasing for the eye
+    // function is found in contrib module, so include contrib.hpp 
+    // and link accordingly
+    cv::Mat falseColorsMap_magnitudes;
+    applyColorMap(adjMap_magnitudes, falseColorsMap_magnitudes, cv::COLORMAP_JET);
+
+    cv::imshow("angulos", falseColorsMap_angles);
+    cv::imshow("magnitudes", falseColorsMap_magnitudes);
+    waitKey(2000);
+
 }
 OpticalFlowSet::OpticalFlowSet(int no_frames)
 {
