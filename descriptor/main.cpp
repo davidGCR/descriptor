@@ -36,10 +36,10 @@ Mat normalize_matriz(Mat matriz);
 int main(int argc, const char * argv[]) {
     // insert code here...
     int step = 5;
-    // string path = "/Users/davidchoqueluqueroman/Desktop/CURSOS-MASTER/IMAGENES/descriptor/data/person23.mp4";
-    string path = "data/person23_running_d4_uncomp.avi";
+     string path = "/Users/davidchoqueluqueroman/Desktop/CURSOS-MASTER/IMAGENES/descriptor/data/";
+//    string path = "data/person23_running_d4_uncomp.avi";
     VideoCapture capture;
-    capture.open(path);
+    capture.open(path+"person23.mp4");
     if (!capture.isOpened())
         std::cerr << "Error processing file. Can't read video " << path;
     
@@ -48,7 +48,7 @@ int main(int argc, const char * argv[]) {
     int videoHeight = (capture.get(CV_CAP_PROP_FRAME_HEIGHT));
     Mat image;
     vector<Mat> frames;
-    for (int64 frameStep = 0; frameStep < videoLength; frameStep += step) {
+    for (int64 frameStep = 20; frameStep < videoLength; frameStep += step) {
         capture.set(CV_CAP_PROP_POS_FRAMES, frameStep);
         capture.read((image));
         if (image.empty())
@@ -58,7 +58,8 @@ int main(int argc, const char * argv[]) {
         if(frames.size()<N_FRAMES_TEST){
             Mat img = image.clone();
             frames.push_back(img);
-            save_frame("data/frames/",to_string(frameStep),img);
+//            save_frame("data/frames/",to_string(frameStep),img);
+            save_frame(path+"frames/",to_string(frameStep),img);
         }
         else
         {
@@ -98,56 +99,56 @@ int main(int argc, const char * argv[]) {
     osf.calculateOpticalFlow(frames);
 
     cout<<"total magnitudes pair: "<<osf.angles_magnitudes.size()<<endl;
-
-    //export_mat_excel(osf.angles_magnitudes[1].angles, "angles");
-    //export_mat_excel(osf.angles_magnitudes[1].magnitudes, "magnitudes");
-
-
-//Seccion of Haralick
-    Haralick har;
-    int size_frame = 20;
-
-    vector<Mat> listCuboidAngles;
-    vector<Mat> listCuboidMagnitudes;
-
-    Mat zeros = Mat::zeros(size_frame, size_frame, CV_32FC1);
-    Mat sampling_angles, sampling_magnitudes;
-
-    generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes[3].angles, osf.angles_magnitudes[3].magnitudes,size_frame);
-
-    cout << listCuboidAngles.size() << endl;
-    cout << listCuboidMagnitudes.size() << endl;
-
-    int orientation = 0;
-
-    vector<Mat> list_haralick_angles;
-    vector<Mat> list_haralick_magnitudes;
-//Step 3 Calculate de co_ocurrence matrix of angles and magnitudes
-    for(int i=0; i<listCuboidAngles.size(); i++)
-    {
-        Mat co_ocurrence_angle = co_ocurrence_magnitud(listCuboidAngles[i], orientation);
-        //export_mat_excel(co_ocurrence_angle, "co_ocurrence_angle" );
-        Mat co_ocurrence_magnitude = co_ocurrence_magnitud(listCuboidMagnitudes[i], orientation);
-
-//Normalize matrix to input to haralick
-        Mat co_ocurrence_angle_n = normalize_matriz(co_ocurrence_angle);
-        Mat co_ocurrence_magnitude_n = normalize_matriz(co_ocurrence_magnitude);
-
-        //export_mat_excel(listCuboidAngles[0], "cuboid_angle");
-        //export_mat_excel(co_ocurrence_angle_n,"co_ocurrence_angle_n");
-
-//Step 4 Extract haralick features
-        Mat haralick_angles = har.calculate(co_ocurrence_angle_n);
-        Mat haralick_magnitudes = har.calculate(co_ocurrence_magnitude_n);
-
-        list_haralick_angles.push_back(haralick_angles);
-        list_haralick_magnitudes.push_back(haralick_magnitudes);   
-    }
-
-    //print_haralick_features(haralick_angles);
-    //print_haralick_features(haralick_magnitudes);
-
-    cout << "list: " << list_haralick_angles.size() << endl;
+//
+//    //export_mat_excel(osf.angles_magnitudes[1].angles, "angles");
+//    //export_mat_excel(osf.angles_magnitudes[1].magnitudes, "magnitudes");
+//
+//
+////Seccion of Haralick
+//    Haralick har;
+//    int size_frame = 20;
+//
+//    vector<Mat> listCuboidAngles;
+//    vector<Mat> listCuboidMagnitudes;
+//
+//    Mat zeros = Mat::zeros(size_frame, size_frame, CV_32FC1);
+//    Mat sampling_angles, sampling_magnitudes;
+//
+//    generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes[3].angles, osf.angles_magnitudes[3].magnitudes,size_frame);
+//
+//    cout << listCuboidAngles.size() << endl;
+//    cout << listCuboidMagnitudes.size() << endl;
+//
+//    int orientation = 0;
+//
+//    vector<Mat> list_haralick_angles;
+//    vector<Mat> list_haralick_magnitudes;
+////Step 3 Calculate de co_ocurrence matrix of angles and magnitudes
+//    for(int i=0; i<listCuboidAngles.size(); i++)
+//    {
+//        Mat co_ocurrence_angle = co_ocurrence_magnitud(listCuboidAngles[i], orientation);
+//        //export_mat_excel(co_ocurrence_angle, "co_ocurrence_angle" );
+//        Mat co_ocurrence_magnitude = co_ocurrence_magnitud(listCuboidMagnitudes[i], orientation);
+//
+////Normalize matrix to input to haralick
+//        Mat co_ocurrence_angle_n = normalize_matriz(co_ocurrence_angle);
+//        Mat co_ocurrence_magnitude_n = normalize_matriz(co_ocurrence_magnitude);
+//
+//        //export_mat_excel(listCuboidAngles[0], "cuboid_angle");
+//        //export_mat_excel(co_ocurrence_angle_n,"co_ocurrence_angle_n");
+//
+////Step 4 Extract haralick features
+//        Mat haralick_angles = har.calculate(co_ocurrence_angle_n);
+//        Mat haralick_magnitudes = har.calculate(co_ocurrence_magnitude_n);
+//
+//        list_haralick_angles.push_back(haralick_angles);
+//        list_haralick_magnitudes.push_back(haralick_magnitudes);
+//    }
+//
+//    //print_haralick_features(haralick_angles);
+//    //print_haralick_features(haralick_magnitudes);
+//
+//    cout << "list: " << list_haralick_angles.size() << endl;
     
     //cout << "cols: " << osf.angles_magnitudes[1].angles.cols << endl;    
 

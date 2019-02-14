@@ -194,6 +194,7 @@ float Haralick::f5IDM(Mat matriz)
 			idm += matriz.at<float>(i,j)/(1+(i-j)*(i-j));
 		}
 	}
+    return 0;
 }
 
 float Haralick::f6SumAverage(Mat matriz)
