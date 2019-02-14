@@ -120,8 +120,9 @@ void OpticalFlowSet::calculateOpticalFlow(vector<Mat>& frames) {
                     
 
                     Mat opt_flow;
-                    cout<<"chanels: "<<image1.channels()<<endl;
-                    cout<<"points0: "<<points[0].size()<<", points1: "<<points[1].size()<<endl;
+//                    cout<<"chanels: "<<image1.channels()<<endl;
+//                    cout<<"points0: "<<points[0].size()<<", points1: "<<points[1].size()<<endl;
+                    
                     plot_optical_flow(frames[i],opt_flow,points[0],points[1]);
                     
                     //calcular angulos y magnitudes 
