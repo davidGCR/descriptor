@@ -36,8 +36,16 @@ Mat normalize_matriz(Mat matriz);
 int main(int argc, const char * argv[]) {
     // insert code here...
     int step = 5;
+    //string video_name = "23_running_d4";
+    string video_name = "15_walking_d1";
+    string activity = "walking";
+    int id_activity = 4;
     // string path = "/Users/davidchoqueluqueroman/Desktop/CURSOS-MASTER/IMAGENES/descriptor/data/person23.mp4";
-    string path = "data/person23_running_d4_uncomp.avi";
+    //string path = "data/person15_running_d1_uncomp.avi";
+    //string path = "data/handclapping";
+    string path = "data/person"+video_name+"_uncomp.avi";
+    //string path = "data/person15_running_d1_uncomp.avi";
+    //string path = "data/person15_running_d1_uncomp.avi";
     VideoCapture capture;
     capture.open(path);
     if (!capture.isOpened())
@@ -48,7 +56,7 @@ int main(int argc, const char * argv[]) {
     int videoHeight = (capture.get(CV_CAP_PROP_FRAME_HEIGHT));
     Mat image;
     vector<Mat> frames;
-    for (int64 frameStep = 0; frameStep < videoLength; frameStep += step) {
+    for (int64 frameStep = 20; frameStep < videoLength; frameStep += step) {
         capture.set(CV_CAP_PROP_POS_FRAMES, frameStep);
         capture.read((image));
         if (image.empty())
@@ -126,9 +134,9 @@ int main(int argc, const char * argv[]) {
 //Step 3 Calculate de co_ocurrence matrix of angles and magnitudes
     for(int i=0; i<listCuboidAngles.size(); i++)
     {
-        cout << "co_ocurrence" << endl;
+        //cout << "co_ocurrence" << endl;
         Mat co_ocurrence_angle = co_ocurrence_magnitud(listCuboidAngles[i], orientation);
-        //export_mat_excel(co_ocurrence_angle, "co_ocurrence_angle" );
+        export_mat_excel(co_ocurrence_angle, "co_ocurrence_angle" );
         Mat co_ocurrence_magnitude = co_ocurrence_magnitud(listCuboidMagnitudes[i], orientation);
 
 //Normalize matrix to input to haralick
@@ -137,7 +145,7 @@ int main(int argc, const char * argv[]) {
 
         //export_mat_excel(listCuboidAngles[0], "cuboid_angle");
         //export_mat_excel(co_ocurrence_angle_n,"co_ocurrence_angle_n");
-        cout << "haralick" << endl;
+        //cout << "haralick" << endl;
 //Step 4 Extract haralick features
         Mat haralick_angles = har.calculate(co_ocurrence_angle_n);
         Mat haralick_magnitudes = har.calculate(co_ocurrence_magnitude_n);
@@ -150,6 +158,8 @@ int main(int argc, const char * argv[]) {
     //print_haralick_features(haralick_magnitudes);
 
     cout << "list: " << list_haralick_angles.size() << endl;
+    export_listmat_excel(list_haralick_angles, list_haralick_magnitudes,"list_"+activity+"_angles", id_activity);
+    //export_listmat_excel(list_haralick_magnitudes, "list_"+activity+"_magnitudes");
     
     //cout << "cols: " << osf.angles_magnitudes[1].angles.cols << endl;    
 
@@ -224,7 +234,8 @@ Mat co_ocurrence_magnitud(Mat matrix, int orientation)
     {
         for(int k=j; k<cols; k++)
         {
-            co_magnitud.at<float>(matrix.at<int>(i,k), matrix.at<int>(i+i_orient,k+j_orient))++;
+            if(matrix.at<int>(i,k) != -1 && matrix.at<int>(i+i_orient,k+j_orient) != -1)
+                co_magnitud.at<float>(matrix.at<int>(i,k), matrix.at<int>(i+i_orient,k+j_orient))++;
         }
     }
 

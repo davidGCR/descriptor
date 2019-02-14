@@ -58,6 +58,12 @@ Mat Haralick::calculate(Mat matriz)
 	features.at<float>(0,12) = Haralick::f13InformationCorrelation(matriz);
 	features.at<float>(0,13) = Haralick::f15Directionality(matriz);
 
+	for(int i=0; i<features.cols; i++)
+	{
+		if(isnan(features.at<float>(0,i)))
+			features.at<float>(0,i) = 0.0f;
+	}
+
 	return features;
 }
 

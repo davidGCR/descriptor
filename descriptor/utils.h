@@ -78,16 +78,21 @@ void export_mat_excel(Mat img, string name)
     //waitKey(5000);
 }
 
-void export_listmat_excel(vector<Mat> list, string name)
+void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, string name, int activity)
 {
     ofstream myfile;
     myfile.open(name+".csv");
-    for(int i=0; i<list.size(); i++)
+    for(int i=0; i<list_angles.size(); i++)
     {
-        for(int j=0; j<list[i].cols; j++)
+        for(int j=0; j<list_angles[i].cols; j++)
         {
-            myfile << ((Scalar)list[i].at<int>(0, j))[0];
-            myfile << "\n";
+            if(list_angles[i].at<float>(0, j) != 0)
+            {
+                myfile << ((Scalar)list_angles[i].at<float>(0, j))[0];
+                myfile << ","<< ((Scalar)list_magnitudes[i].at<float>(0, j))[0];
+                myfile << "," << activity;
+                myfile << "\n";
+            }
         }
     }
     myfile.close();
