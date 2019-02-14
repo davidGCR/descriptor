@@ -21,7 +21,7 @@ class OpticalFlowSet{
 private:
     /* data */
     int** map_img_img; //guarda indice de matri
-    
+    int view_time;
 
 public:
     vector<Angles_Magnitude> angles_magnitudes;
@@ -31,7 +31,7 @@ public:
     OpticalFlowSet(int no_frames);
     ~OpticalFlowSet();
     void setOpticalFlow(int image1, int image, Angles_Magnitude a_m);
-    void calculateOpticalFlow(vector<Mat>& frames);
+    void calculateOpticalFlow(vector<Mat>& frames,int threshold);
     void select_important_pixels(vector<Point2f> &vecPoints, Mat frameB, Mat frameA, int thr);
     void create_angles_magnitudes_from_LK(vector<Point2f> &vecPoints,vector<Point2f> &initial_positions,Angles_Magnitude & AMmat);
     void plot_optical_flow(Mat input_img, Mat output_img, vector<Point2f> points1,vector<Point2f> points2);
@@ -59,7 +59,7 @@ void OpticalFlowSet::plot_optical_flow(Mat input_img, Mat output_img, vector<Poi
         // }
     }
     imshow("optical flow",output_img);
-    waitKey(1500);
+    waitKey(view_time);
 }
 void OpticalFlowSet::plot_angles_magnitudes(int index){
     Mat img_angles = angles_magnitudes[index].angles;
@@ -93,11 +93,12 @@ void OpticalFlowSet::plot_angles_magnitudes(int index){
 
     cv::imshow("angulos", falseColorsMap_angles);
     cv::imshow("magnitudes", falseColorsMap_magnitudes);
-    waitKey(2000);
+    waitKey(view_time);
 
 }
 OpticalFlowSet::OpticalFlowSet(int no_frames)
 {
+    view_time = 2500;
     map_img_img = new int*[no_frames];
     for (int i = 0; i < no_frames; i++) {
         map_img_img[i] = new int[no_frames];
@@ -114,7 +115,7 @@ void OpticalFlowSet::setOpticalFlow(int image1, int image2, Angles_Magnitude a_m
      map_img_img[image2][image1] = angles_magnitudes.size()-1;
 }
 
-void OpticalFlowSet::calculateOpticalFlow(vector<Mat>& frames) {
+void OpticalFlowSet::calculateOpticalFlow(vector<Mat>& frames, int threshold=10) {
     // data.clear();
     vector<Point2f> points[2];
     // vector<Point2f> basePoints;
@@ -141,7 +142,7 @@ void OpticalFlowSet::calculateOpticalFlow(vector<Mat>& frames) {
 
             if (j < frames.size()) {
                 //aplicar mascara (segun paper)
-                select_important_pixels(points[0], frames[j], frames[i],100);
+                select_important_pixels(points[0], frames[j], frames[i],threshold);
                 
                 Angles_Magnitude angles_magni;
                 angles_magni.angles = Mat(rows, cols, CV_16SC1, -1);  // angles
@@ -161,6 +162,7 @@ void OpticalFlowSet::calculateOpticalFlow(vector<Mat>& frames) {
                     
                     plot_optical_flow(frames[i],opt_flow,points[0],points[1]);
                     
+                    
                     //calcular angulos y magnitudes 
                     // for(int i = 0; i < points[0].size(); i++)
                     // {
@@ -170,6 +172,8 @@ void OpticalFlowSet::calculateOpticalFlow(vector<Mat>& frames) {
                     create_angles_magnitudes_from_LK(points[1], points[0], angles_magni);
                     // //guardar indices en matriz y guardar matrices de angulos y magnitudes
                     setOpticalFlow(i,j,angles_magni);
+
+                    plot_angles_magnitudes(angles_magnitudes.size()-1);
                 }
             } else {
                 break;

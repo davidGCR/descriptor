@@ -44,9 +44,13 @@ int main(int argc, const char * argv[]) {
     // string path = "/Users/davidchoqueluqueroman/Desktop/CURSOS-MASTER/IMAGENES/descriptor/data/person23.mp4";
     //string path = "data/person15_running_d1_uncomp.avi";
     //string path = "data/handclapping";
-    string path = "data/person"+video_name+"_uncomp.avi";
+    // string path = "data/person"+video_name+"_uncomp.avi";
     //string path = "data/person15_running_d1_uncomp.avi";
     //string path = "data/person15_running_d1_uncomp.avi";
+
+
+    string path = "data/person18_boxing_d4_uncomp.avi";
+
     VideoCapture capture;
     capture.open(path);
     if (!capture.isOpened())
@@ -105,6 +109,7 @@ int main(int argc, const char * argv[]) {
 
     OpticalFlowSet osf(frames.size());
     osf.calculateOpticalFlow(frames);
+    // osf.plot_angles_magnitudes();
 
     cout<<"total magnitudes pair: "<<osf.angles_magnitudes.size()<<endl;
 
