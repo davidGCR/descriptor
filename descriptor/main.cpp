@@ -1,14 +1,7 @@
-//
-//  main.cpp
-//  descriptor
-//
-//  Created by David Choqueluque Roman on 2/11/19.
-//  Copyright © 2019 David Choqueluque Roman. All rights reserved.
-//
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
-
+#include"angles_magnitude.h"
 #include "opencv2/videoio.hpp"
 #include "opencv2/video/tracking.hpp"
 using namespace cv;
@@ -31,7 +24,8 @@ const unsigned int  N_FRAMES_TEST = 5;
 
 Mat co_ocurrence_magnitud(Mat matrix, int orientation);
 void print_haralick_features(Mat haralick_features);
-void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagnitudes, Mat angles, Mat magnitudes,int frame_size);
+//void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagnitudes, vector<Angles_Magnitude> list_Angles_Magnitudes,int frame_size);
+void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagnitudes, vector<Angles_Magnitude> frames_angles_magnitudes,int frame_size);
 Mat normalize_matriz(Mat matriz);
 int run_all_data(string, string, int);
 
@@ -50,8 +44,8 @@ int main(int argc, const char * argv[])
     
     //string action = "running"; int id = 0;
     //string action = "handclapping"; int id = 1;
-    //string action = "handwaving"; int id = 2;
-    string action = "jogging"; int id = 3;
+    string action = "handwaving"; int id = 2;
+    //string action = "jogging"; int id = 3;
     //string action = "walking"; int id = 4;
     //string action = "boxing"; int id = 5;
     for(int i=1; i<=5; i++)
@@ -193,8 +187,9 @@ int run_all_data(string video_name, string activity, int id_activity) {
     Mat zeros = Mat::zeros(size_frame, size_frame, CV_32FC1);
     Mat sampling_angles, sampling_magnitudes;
 
-    for(int i=0; i<osf.angles_magnitudes.size(); i++)
-        generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes[i].angles, osf.angles_magnitudes[i].magnitudes,size_frame);
+    //for(int i=0; i<osf.angles_magnitudes.size(); i++)
+    //generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes[i].angles, osf.angles_magnitudes[i].magnitudes,size_frame);
+    generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes,size_frame);
    // export_mat_excel(osf.angles_magnitudes[3].angles, "cuboid_angle");
 
     //cout << listCuboidAngles.size() << endl;
@@ -333,24 +328,27 @@ void print_haralick_features(Mat haralick_features)
     cout << "f14: "<< haralick_features.at<float>(0,13) << endl;
 }
 
-void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagnitudes, Mat angles, Mat magnitudes,int frame_size)
+void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagnitudes, vector<Angles_Magnitude> frames_angles_magnitudes,int frame_size)
 {   
-    for(int h=0; h<(magnitudes.rows/frame_size); h++)
+    for(int h=0; h<(frames_angles_magnitudes[0].angles.rows/frame_size); h++)
     {       
-        for(int k=0; k<(magnitudes.cols/frame_size); k++)
-        {       
-            Mat angles_cuboid = Mat::zeros(frame_size, frame_size, CV_32FC1);
-            Mat magnitude_cuboid = Mat::zeros(frame_size, frame_size, CV_32FC1);
-            for(int i=h*frame_size; i<(h+1)*frame_size; i++)
+        for(int k=0; k<(frames_angles_magnitudes[0].angles.cols/frame_size); k++)
+        {   
+            for(int fr=0; fr<frames_angles_magnitudes.size(); fr++)
             {
-                for(int j=k*frame_size; j<(k+1)*frame_size; j++)
+                Mat angles_cuboid = Mat::zeros(frame_size, frame_size, CV_32FC1);
+                Mat magnitude_cuboid = Mat::zeros(frame_size, frame_size, CV_32FC1);
+                for(int i=h*frame_size; i<(h+1)*frame_size; i++)
                 {
-                    angles_cuboid.at<float>(i-h*frame_size,j-k*frame_size) = angles.at<float>(i,j);
-                    magnitude_cuboid.at<float>(i-h*frame_size,j-k*frame_size) = magnitudes.at<float>(i,j);
+                    for(int j=k*frame_size; j<(k+1)*frame_size; j++)
+                    {
+                        angles_cuboid.at<float>(i-h*frame_size,j-k*frame_size) = frames_angles_magnitudes[fr].angles.at<float>(i,j);
+                        magnitude_cuboid.at<float>(i-h*frame_size,j-k*frame_size) = frames_angles_magnitudes[fr].magnitudes.at<float>(i,j);
+                    }
                 }
+                listCuboidAngles.push_back(angles_cuboid);
+                listCuboidMagnitudes.push_back(magnitude_cuboid);
             }
-            listCuboidAngles.push_back(angles_cuboid);
-            listCuboidMagnitudes.push_back(magnitude_cuboid);
         }
     }
 }

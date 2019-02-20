@@ -81,7 +81,7 @@ void export_mat_excel(Mat img, string name)
 void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, string name, int activity)
 {
     ofstream myfile;
-    myfile.open(name+".csv");
+    myfile.open("data_generated/"+name+".csv");
     myfile << "angles" << "," << "magnitudes" << "," << "activity" << "\n";
     for(int i=0; i<list_angles.size(); i++)
     {
