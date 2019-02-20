@@ -42,7 +42,7 @@ Haralick::Haralick()
 
 Mat Haralick::calculate(Mat matriz)
 {
-	Mat features = Mat::zeros(1,15, CV_32FC1);
+	Mat features = Mat::zeros(1,12, CV_32FC1);
 	features.at<float>(0,0) = Haralick::f1ASM(matriz);
 	features.at<float>(0,1) = Haralick::f2Constrast(matriz);
 	features.at<float>(0,2) = Haralick::f3Correlation(matriz);
@@ -55,8 +55,8 @@ Mat Haralick::calculate(Mat matriz)
 	features.at<float>(0,9) = Haralick::f10DifferenceVariance(matriz);
 	features.at<float>(0,10) = Haralick::f11DifferenceEntropy(matriz);
 	features.at<float>(0,11) = Haralick::f12InformationCorrelation(matriz);
-	features.at<float>(0,12) = Haralick::f13InformationCorrelation(matriz);
-	features.at<float>(0,13) = Haralick::f15Directionality(matriz);
+	//features.at<float>(0,12) = Haralick::f13InformationCorrelation(matriz);
+	//features.at<float>(0,13) = Haralick::f15Directionality(matriz);
 
 	for(int i=0; i<features.cols; i++)
 	{

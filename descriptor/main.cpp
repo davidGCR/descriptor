@@ -18,6 +18,7 @@ using namespace std;
 #include "opticalFlowSet.h"
 #include "utils.h"
 #include "haralick.h"
+#include <string>
 
 // typedef std::pair<cv::Mat_<int>, cv::Mat_<int>> ParMat;
 // void setOpticalFlowData(vector<Mat>& frames);
@@ -32,24 +33,88 @@ Mat co_ocurrence_magnitud(Mat matrix, int orientation);
 void print_haralick_features(Mat haralick_features);
 void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagnitudes, Mat angles, Mat magnitudes,int frame_size);
 Mat normalize_matriz(Mat matriz);
+int run_all_data(string, string, int);
 
-int main(int argc, const char * argv[]) {
+struct Video
+{
+    string nameVideo;
+    string exportName;
+    int id_activity;
+};
+
+int main(int argc, const char * argv[])
+{
+    vector<Video> listVideos;
+
+    Video vid;
+    
+    //string action = "running"; int id = 0;
+    string action = "handclapping"; int id = 1;
+    //string action = "handwaving"; int id = 2;
+    //string action = "jogging"; int id = 3;
+    //string action = "walking"; int id = 4;
+    //string action = "boxing"; int id = 5;
+    for(int i=1; i<=9; i++)
+    {
+        for(int j=1; j<=4; j++)
+        {
+            vid.nameVideo = "data/"+action+"/person0"+to_string(i)+"_"+action+"_d"+to_string(j)+"_uncomp.avi";
+            vid.exportName = action+"_person0"+to_string(i)+"_s"+to_string(j);
+            vid.id_activity = id;
+            listVideos.push_back(vid);
+        }
+    }
+    /*vid.nameVideo = "15_handclapping_d1";
+    vid.exportName = "handclapping";
+    vid.id_activity = 1;
+    listVideos.push_back(vid);
+    vid.nameVideo = "15_handwaving_d1";
+    vid.exportName = "handwaving";
+    vid.id_activity = 2;
+    listVideos.push_back(vid);
+    vid.nameVideo = "15_jogging_d1";
+    vid.exportName = "jogging";
+    vid.id_activity = 3;
+    listVideos.push_back(vid);
+    vid.nameVideo = "15_walking_d1";
+    vid.exportName = "walking";
+    vid.id_activity = 4;
+    listVideos.push_back(vid);
+    vid.nameVideo = "15_boxing_d1";
+    vid.exportName = "boxing";
+    vid.id_activity = 5;
+    listVideos.push_back(vid);
+    vid.nameVideo = "01_boxing_d1";
+    vid.exportName = "test_boxing";
+    vid.id_activity = 5;
+    listVideos.push_back(vid);*/
+
+    for(int i=0; i<listVideos.size(); i++)
+        run_all_data(listVideos[i].nameVideo, listVideos[i].exportName, listVideos[i].id_activity);
+
+
+    return 0;
+}
+
+int run_all_data(string video_name, string activity, int id_activity) {
     // insert code here...
     int step = 5;
-    string video_name = "15_boxing_d4";
+    //string video_name = "15_boxing_d4";
     //string activity = "running_23";
-    string activity = "boxing_23";
+    //string activity = "boxing_15";
     //string video_name = "15_walking_d1";
-    int id_activity = 5;
+    //int id_activity = 5;
     // string path = "/Users/davidchoqueluqueroman/Desktop/CURSOS-MASTER/IMAGENES/descriptor/data/person23.mp4";
     //string path = "data/person15_running_d1_uncomp.avi";
     //string path = "data/handclapping";
-    // string path = "data/person"+video_name+"_uncomp.avi";
     //string path = "data/person15_running_d1_uncomp.avi";
     //string path = "data/person15_running_d1_uncomp.avi";
 
 
-    string path = "data/person18_boxing_d4_uncomp.avi";
+    //string path = "data/person18_boxing_d4_uncomp.avi";
+     //string path = "data/boxing/person"+video_name+"_uncomp.avi";
+
+    string path = video_name;
 
     VideoCapture capture;
     capture.open(path);
@@ -166,7 +231,7 @@ int main(int argc, const char * argv[]) {
     //print_haralick_features(haralick_magnitudes);
 
     cout << "list: " << list_haralick_angles.size() << endl;
-    export_listmat_excel(list_haralick_angles, list_haralick_magnitudes,"list_"+activity+"_angles", id_activity);
+    export_listmat_excel(list_haralick_angles, list_haralick_magnitudes,"list_"+activity, id_activity);
     //export_listmat_excel(list_haralick_magnitudes, "list_"+activity+"_magnitudes");
     
     //cout << "cols: " << osf.angles_magnitudes[1].angles.cols << endl;    
