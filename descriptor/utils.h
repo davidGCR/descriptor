@@ -82,19 +82,21 @@ void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, s
 {
     ofstream myfile;
     myfile.open(name+".csv");
+    myfile << "angles" << "," << "magnitudes" << "," << "activity" << "\n";
     for(int i=0; i<list_angles.size(); i++)
     {
         for(int j=0; j<list_angles[i].cols; j++)
         {
             //-4.34882e-06
-            if(list_angles[i].at<float>(0, j) != 0 && list_angles[i].at<float>(0, j) > -0.000004)
-            {
+           // if(list_angles[i].at<float>(0, j) != 0 && list_angles[i].at<float>(0, j) > -0.000004)
+            //{
                 //cout << ((Scalar)list_angles[i].at<float>(0, j))[0]*1000 << endl;
+
                 myfile << ((Scalar)list_angles[i].at<float>(0, j))[0];
                 myfile << ","<< ((Scalar)list_magnitudes[i].at<float>(0, j))[0];
                 myfile << "," << activity;
                 myfile << "\n";
-            }
+            //}
         }
     }
     myfile.close();

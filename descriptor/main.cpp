@@ -49,12 +49,12 @@ int main(int argc, const char * argv[])
     Video vid;
     
     //string action = "running"; int id = 0;
-    string action = "handclapping"; int id = 1;
+    //string action = "handclapping"; int id = 1;
     //string action = "handwaving"; int id = 2;
-    //string action = "jogging"; int id = 3;
+    string action = "jogging"; int id = 3;
     //string action = "walking"; int id = 4;
     //string action = "boxing"; int id = 5;
-    for(int i=1; i<=9; i++)
+    for(int i=1; i<=5; i++)
     {
         for(int j=1; j<=4; j++)
         {
