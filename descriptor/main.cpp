@@ -78,7 +78,7 @@ int main(int argc, const char * argv[]) {
             break;
         }
         imshow("imagen", image);
-        waitKey(100);
+        waitKey(1000);
     }
 
 
@@ -108,7 +108,7 @@ int main(int argc, const char * argv[]) {
     vector<Point2f> points[2];
 
     OpticalFlowSet osf(frames.size());
-    osf.calculateOpticalFlow(frames);
+    osf.calculateOpticalFlow(frames,8);
     // osf.plot_angles_magnitudes();
 
     cout<<"total magnitudes pair: "<<osf.angles_magnitudes.size()<<endl;
