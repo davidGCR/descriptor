@@ -143,7 +143,7 @@ int run_all_data(string video_name, string activity, int id_activity) {
             break;
         }
         imshow("imagen", image);
-        waitKey(100);
+        waitKey(1000);
     }
 
 
@@ -173,7 +173,7 @@ int run_all_data(string video_name, string activity, int id_activity) {
     vector<Point2f> points[2];
 
     OpticalFlowSet osf(frames.size());
-    osf.calculateOpticalFlow(frames);
+    osf.calculateOpticalFlow(frames,8);
     // osf.plot_angles_magnitudes();
 
     cout<<"total magnitudes pair: "<<osf.angles_magnitudes.size()<<endl;
