@@ -27,13 +27,13 @@ void print_haralick_features(Mat haralick_features);
 //void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagnitudes, vector<Angles_Magnitude> list_Angles_Magnitudes,int frame_size);
 void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagnitudes, vector<Angles_Magnitude> frames_angles_magnitudes,int frame_size);
 Mat normalize_matriz(Mat matriz);
-int run_all_data(string, string, int);
+int run_all_data(string, string, string);
 
 struct Video
 {
     string nameVideo;
     string exportName;
-    int id_activity;
+    string category;
 };
 
 int main(int argc, const char * argv[])
@@ -44,18 +44,30 @@ int main(int argc, const char * argv[])
     
     //string action = "running"; int id = 0;
     //string action = "handclapping"; int id = 1;
-    string action = "handwaving"; int id = 2;
+    //string action = "handwaving"; int id = 2;
     //string action = "jogging"; int id = 3;
     //string action = "walking"; int id = 4;
     //string action = "boxing"; int id = 5;
-    for(int i=1; i<=5; i++)
+    vector<string> list_actions;
+    list_actions.push_back("running");
+    list_actions.push_back("handclapping");
+    list_actions.push_back("handwaving");
+    list_actions.push_back("jogging");
+    list_actions.push_back("walking");
+    list_actions.push_back("boxing");
+
+    for(int k=0; k<list_actions.size(); k++)
     {
-        for(int j=1; j<=4; j++)
+        string action = list_actions[k];
+        for(int i=1; i<=5; i++)
         {
-            vid.nameVideo = "data/"+action+"/person0"+to_string(i)+"_"+action+"_d"+to_string(j)+"_uncomp.avi";
-            vid.exportName = action+"_person0"+to_string(i)+"_s"+to_string(j);
-            vid.id_activity = id;
-            listVideos.push_back(vid);
+            for(int j=1; j<=4; j++)
+            {
+                vid.nameVideo = "data/"+action+"/person0"+to_string(i)+"_"+action+"_d"+to_string(j)+"_uncomp.avi";
+                vid.exportName = action+"_person0"+to_string(i)+"_s"+to_string(j);
+                vid.category = action;
+                listVideos.push_back(vid);
+            }
         }
     }
     /*vid.nameVideo = "15_handclapping_d1";
@@ -84,13 +96,13 @@ int main(int argc, const char * argv[])
     listVideos.push_back(vid);*/
 
     for(int i=0; i<listVideos.size(); i++)
-        run_all_data(listVideos[i].nameVideo, listVideos[i].exportName, listVideos[i].id_activity);
+        run_all_data(listVideos[i].nameVideo, listVideos[i].exportName, listVideos[i].category);
 
 
     return 0;
 }
 
-int run_all_data(string video_name, string activity, int id_activity) {
+int run_all_data(string video_name, string activity, string id_activity) {
     // insert code here...
     int step = 5;
     //string video_name = "15_boxing_d4";
@@ -167,7 +179,7 @@ int run_all_data(string video_name, string activity, int id_activity) {
     vector<Point2f> points[2];
 
     OpticalFlowSet osf(frames.size());
-    osf.calculateOpticalFlow(frames,8);
+    osf.calculateOpticalFlow(frames,15);
     // osf.plot_angles_magnitudes();
 
     cout<<"total magnitudes pair: "<<osf.angles_magnitudes.size()<<endl;

@@ -78,11 +78,22 @@ void export_mat_excel(Mat img, string name)
     //waitKey(5000);
 }
 
-void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, string name, int activity)
+void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, string name, string activity)
 {
     ofstream myfile;
     myfile.open("data_generated/"+name+".csv");
-    myfile << "angles" << "," << "magnitudes" << "," << "activity" << "\n";
+    //myfile << "angles" << "," << "magnitudes" << "," << "activity" << "\n";
+    //cout << "-->" << list_angles.size() << endl;
+    //cout << "--->" << list_angles[0].cols << endl; 
+
+    for(int i=0; i<385; i++)
+    {
+        if(i < 384)
+            myfile << "value" << ",";
+        else
+            myfile << "activity" << "\n";
+    }
+
     for(int i=0; i<list_angles.size(); i++)
     {
         for(int j=0; j<list_angles[i].cols; j++)
@@ -92,11 +103,14 @@ void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, s
             //{
                 //cout << ((Scalar)list_angles[i].at<float>(0, j))[0]*1000 << endl;
 
-                myfile << ((Scalar)list_angles[i].at<float>(0, j))[0];
-                myfile << ","<< ((Scalar)list_magnitudes[i].at<float>(0, j))[0];
-                myfile << "," << activity;
-                myfile << "\n";
+                myfile << ((Scalar)list_angles[i].at<float>(0, j))[0] << ",";
+                myfile << ((Scalar)list_magnitudes[i].at<float>(0, j))[0] << ",";
             //}
+        }
+        if((i+1)%16 == 0)
+        {   
+            myfile << activity;
+            myfile << "\n";
         }
     }
     myfile.close();
