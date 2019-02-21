@@ -49,22 +49,30 @@ int main(int argc, const char * argv[])
     //string action = "walking"; int id = 4;
     //string action = "boxing"; int id = 5;
     vector<string> list_actions;
-    list_actions.push_back("running");
-    list_actions.push_back("handclapping");
-    list_actions.push_back("handwaving");
-    list_actions.push_back("jogging");
+    //list_actions.push_back("running");
+    //list_actions.push_back("handclapping");
+    //list_actions.push_back("handwaving");
+    //list_actions.push_back("jogging");
     list_actions.push_back("walking");
     list_actions.push_back("boxing");
 
     for(int k=0; k<list_actions.size(); k++)
     {
         string action = list_actions[k];
-        for(int i=1; i<=5; i++)
+        for(int i=6; i<=8; i++)
         {
             for(int j=1; j<=4; j++)
             {
-                vid.nameVideo = "data/"+action+"/person0"+to_string(i)+"_"+action+"_d"+to_string(j)+"_uncomp.avi";
-                vid.exportName = action+"_person0"+to_string(i)+"_s"+to_string(j);
+                if(i > 9)
+                {
+                    vid.nameVideo = "data/"+action+"/person"+to_string(i)+"_"+action+"_d"+to_string(j)+"_uncomp.avi";
+                    vid.exportName = action+"_person"+to_string(i)+"_s"+to_string(j);
+                }
+                else
+                {
+                    vid.nameVideo = "data/"+action+"/person0"+to_string(i)+"_"+action+"_d"+to_string(j)+"_uncomp.avi";
+                    vid.exportName = action+"_person0"+to_string(i)+"_s"+to_string(j);
+                }
                 vid.category = action;
                 listVideos.push_back(vid);
             }
