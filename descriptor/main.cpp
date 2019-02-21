@@ -53,13 +53,13 @@ int main(int argc, const char * argv[])
     //list_actions.push_back("handclapping");
     //list_actions.push_back("handwaving");
     //list_actions.push_back("jogging");
-    list_actions.push_back("walking");
+    //list_actions.push_back("walking");
     list_actions.push_back("boxing");
 
     for(int k=0; k<list_actions.size(); k++)
     {
         string action = list_actions[k];
-        for(int i=6; i<=8; i++)
+        for(int i=9; i<=13; i++)
         {
             for(int j=1; j<=4; j++)
             {
