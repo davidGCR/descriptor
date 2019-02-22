@@ -47,6 +47,7 @@ void OpticalFlowSet::plot_optical_flow(Mat input_img, Mat output_img, vector<Poi
         // line(output_img, points1[i], points2[i], Scalar(0, 255, 255),1, 1, 0);
         if (abs(points2[i].x - points1[i].x) > 0) {
             line(output_img, points1[i], points2[i], Scalar(0, 255, 255),1, 1, 0);
+
             // circle(output_img, points1[i], 2, Scalar(255, 0, 0), 1, 1,0);
             // line(output_img, points1[i], points2[i], Scalar(0, 0, 255),1, 1, 0);
             // circle(output_img, points1[i], 1, Scalar(255, 0, 0), 1, 1,0);
@@ -148,6 +149,7 @@ void OpticalFlowSet::calculateOpticalFlow(vector<Mat>& frames, int threshold=10)
                 angles_magni.angles = Mat(rows, cols, CV_16SC1, -1);  // angles
                 angles_magni.magnitudes = Mat(rows, cols, CV_16SC1, -1);  // magnitude
                 
+                //cout << "first_size: "<<points[0].size() << endl;
                 if (points[0].size() > 0) {
                     Mat image1 = frames[i];
                     Mat image2 = frames[j];
@@ -159,7 +161,7 @@ void OpticalFlowSet::calculateOpticalFlow(vector<Mat>& frames, int threshold=10)
                     Mat opt_flow;
 //                    cout<<"chanels: "<<image1.channels()<<endl;
 //                    cout<<"points0: "<<points[0].size()<<", points1: "<<points[1].size()<<endl;
-                    
+
                     plot_optical_flow(frames[i],opt_flow,points[0],points[1]);
                     
                     
@@ -187,7 +189,8 @@ void OpticalFlowSet::select_important_pixels(vector<Point2f> &vecPoints, Mat fra
   cvtColor(frameB, frameB, CV_BGR2GRAY);
   cvtColor(frameA, frameA, CV_BGR2GRAY);
 
-  cv::Mat frameDif = cv::abs(frameB - frameA);
+  //cv::Mat frameDif = cv::abs(frameB - frameA);
+  cv::Mat frameDif = frameB - frameA;
 
   for (int i = 0; i < frameDif.rows; ++i) {
     for (int j = 0; j< frameDif.cols; ++j) {
@@ -216,7 +219,7 @@ void OpticalFlowSet::create_angles_magnitudes_from_LK(vector<Point2f> &vecPoints
   // If 360 / (360 / 4) it will go to the bin 4, but it is from 0 to 3.
   // (int)floor(angle / (this->maxAngle / this->nBinsAngle));
 
-
+   // cout << "size: "<<initial_positions.size() << endl;
     for (int i = 0; i < initial_positions.size(); ++i){
         catetoOposto = vecPoints[i].y - initial_positions[i].y;
         catetoAdjacente = vecPoints[i].x - initial_positions[i].x;
@@ -251,9 +254,13 @@ void OpticalFlowSet::create_angles_magnitudes_from_LK(vector<Point2f> &vecPoints
         y = initial_positions[i].y;
         x = initial_positions[i].x;
 
-        //cout<<"angle: "<<valAngle<<", magnitude: "<<valMagnitude<<endl;
-        AMmat.angles(y, x) = valAngle;
-        AMmat.magnitudes(y, x) = valMagnitude;
+        //cout<<"i: "<<i<<" angle: "<<valAngle<<", magnitude: "<<valMagnitude<<" x: "<< x<< " y: " <<y << endl;
+        /*AMmat.angles(y, x) = valAngle;
+        AMmat.magnitudes(y, x) = valMagnitude;*/
+        AMmat.angles.at<int>(y, x) = valAngle;
+        AMmat.magnitudes.at<int>(y, x) = valMagnitude;
+
+
     }
 }
 

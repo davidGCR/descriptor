@@ -60,7 +60,25 @@ void load_frames_to_vector(string folder,vector<Mat>& frames,vector<string> name
     }
 }
 
-void export_mat_excel(Mat img, string name)
+void export_mat_excel_float(Mat img, string name)
+{
+    ofstream myfile;
+    myfile.open(name+".csv");
+    for(int i=0; i<img.rows; i++)
+    {
+        for(int j=0; j<img.cols; j++)
+        {
+            myfile << ((Scalar)img.at<float>(i, j))[0];
+            myfile << ",";
+        }
+        myfile << "\n";
+
+    }
+    myfile.close();
+    //waitKey(5000);
+}
+
+void export_mat_excel_int(Mat img, string name)
 {
     ofstream myfile;
     myfile.open(name+".csv");
