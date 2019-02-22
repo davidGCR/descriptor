@@ -49,17 +49,17 @@ int main(int argc, const char * argv[])
     //string action = "walking"; int id = 4;
     //string action = "boxing"; int id = 5;
     vector<string> list_actions;
-    //list_actions.push_back("running");
-    //list_actions.push_back("handclapping");
-    //list_actions.push_back("handwaving");
-    //list_actions.push_back("jogging");
-    //list_actions.push_back("walking");
+    list_actions.push_back("running");
+    list_actions.push_back("handclapping");
+    list_actions.push_back("handwaving");
+    list_actions.push_back("jogging");
+    list_actions.push_back("walking");
     list_actions.push_back("boxing");
 
-    /*for(int k=0; k<list_actions.size(); k++)
+    for(int k=0; k<list_actions.size(); k++)
     {
         string action = list_actions[k];
-        for(int i=1; i<=1; i++)
+        for(int i=6; i<=25; i++)
         {
             for(int j=1; j<=4; j++)
             {
@@ -77,11 +77,11 @@ int main(int argc, const char * argv[])
                 listVideos.push_back(vid);
             }
         }
-    }*/
+    }
 
-    vid.nameVideo = "data/jogging/person02_jogging_d1_uncomp.avi";
+    /*vid.nameVideo = "data/jogging/person02_jogging_d1_uncomp.avi";
     vid.exportName = "boxing_person02_s_prueba";
-    listVideos.push_back(vid);
+    listVideos.push_back(vid);*/
 
     /*vid.nameVideo = "15_handclapping_d1";
     vid.exportName = "handclapping";

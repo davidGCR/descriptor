@@ -99,7 +99,7 @@ void OpticalFlowSet::plot_angles_magnitudes(int index){
 }
 OpticalFlowSet::OpticalFlowSet(int no_frames)
 {
-    view_time = 2500;
+    view_time = 1;
     map_img_img = new int*[no_frames];
     for (int i = 0; i < no_frames; i++) {
         map_img_img[i] = new int[no_frames];
