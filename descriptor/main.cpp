@@ -60,7 +60,7 @@ int main(int argc, const char * argv[])
     for(int k=0; k<list_actions.size(); k++)
     {
         string action = list_actions[k];
-        for(int i=6; i<=25; i++)
+        for(int i=1; i<=25; i++)
         {
             for(int j=1; j<=4; j++)
             {
