@@ -50,7 +50,7 @@ int main(int argc, const char * argv[])
     //string action = "walking"; int id = 4;
     //string action = "boxing"; int id = 5;
     vector<string> list_actions;
-    list_actions.push_back("running");
+    /*list_actions.push_back("running");
     list_actions.push_back("handclapping");
     list_actions.push_back("handwaving");
     list_actions.push_back("jogging");
@@ -78,7 +78,7 @@ int main(int argc, const char * argv[])
                 listVideos.push_back(vid);
             }
         }
-    }
+    }*/
 
     /*vid.nameVideo = "data/jogging/person02_jogging_d1_uncomp.avi";
     vid.exportName = "boxing_person02_s_prueba";
@@ -103,11 +103,11 @@ int main(int argc, const char * argv[])
     vid.nameVideo = "data/person15_running_d1_uncomp.avi";
     vid.exportName = "boxing_person15_s1";
     vid.category = "running";
-    listVideos.push_back(vid);
+    listVideos.push_back(vid);*/
     vid.nameVideo = "data/person15_boxing_d1_uncomp.avi";
     vid.exportName = "test_boxing_person15_s1";
     vid.category = "boxing";
-    listVideos.push_back(vid);*/
+    listVideos.push_back(vid);
 
     for(int i=0; i<listVideos.size(); i++)
         run_all_data(listVideos[i].nameVideo, listVideos[i].exportName, listVideos[i].category);
@@ -276,6 +276,8 @@ int run_all_data(string video_name, string activity, string id_activity) {
                 list_haralick_magnitudes.push_back(haralick_magnitudes);   
             }
         }
+    //    cout << "size haralick: " << list_haralick_angles.size() << " : " << listAllCuboidAngles[i].size() << endl;
+
     }
     
 //Step 3 Calculate de co_ocurrence matrix of angles and magnitudes

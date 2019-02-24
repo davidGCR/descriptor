@@ -96,6 +96,7 @@ void export_mat_excel_int(Mat img, string name)
     //waitKey(5000);
 }
 
+//480 features
 void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, string name, string activity)
 {
     ofstream myfile;
@@ -104,9 +105,9 @@ void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, s
     //cout << "-->" << list_angles.size() << endl;
     //cout << "--->" << list_angles[0].cols << endl; 
 
-    for(int i=0; i<385; i++)
+    for(int i=0; i<961; i++)
     {
-        if(i < 384)
+        if(i < 960)
             myfile << "value" << ",";
         else
             myfile << "activity" << "\n";
@@ -125,7 +126,7 @@ void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, s
                 myfile << ((Scalar)list_magnitudes[i].at<float>(0, j))[0] << ",";
             //}
         }
-        if((i+1)%16 == 0)
+        if((i+1)%40 == 0)
         {   
             myfile << activity;
             myfile << "\n";
