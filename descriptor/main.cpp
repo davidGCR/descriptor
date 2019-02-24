@@ -1,7 +1,7 @@
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
-#include"angles_magnitude.h"
+#include "angles_magnitude.h"
 #include "opencv2/videoio.hpp"
 #include "opencv2/video/tracking.hpp"
 using namespace cv;
@@ -20,12 +20,13 @@ using namespace std;
 // vector<ParMat> data;
 const string DATA_FOLDER = "data/";
 const string FRAMES_FOLDER = "data/frames/";
-const unsigned int  N_FRAMES_TEST = 5;
+const unsigned int  N_FRAMES_TEST = 10;
 
 Mat co_ocurrence_magnitud(Mat matrix, int orientation);
 void print_haralick_features(Mat haralick_features);
 //void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagnitudes, vector<Angles_Magnitude> list_Angles_Magnitudes,int frame_size);
 void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagnitudes, vector<Angles_Magnitude> frames_angles_magnitudes,int frame_size);
+void generate_cuboids(vector<vector<Mat>> &listCuboidAngles, vector<vector<Mat>> &listCuboidMagnitudes, vector<Angles_Magnitude> frames_angles_magnitudes,int frame_size, int fr_start, int fr_end);
 Mat normalize_matriz(Mat matriz);
 int run_all_data(string, string, string);
 
@@ -83,29 +84,29 @@ int main(int argc, const char * argv[])
     vid.exportName = "boxing_person02_s_prueba";
     listVideos.push_back(vid);*/
 
-    /*vid.nameVideo = "15_handclapping_d1";
-    vid.exportName = "handclapping";
-    vid.id_activity = 1;
+    /*vid.nameVideo = "data/person15_handclapping_d1_uncomp.avi";
+    vid.exportName = "handclapping_person15_s1";
+    vid.category = "handclapping";
     listVideos.push_back(vid);
-    vid.nameVideo = "15_handwaving_d1";
-    vid.exportName = "handwaving";
-    vid.id_activity = 2;
+    vid.nameVideo = "data/person15_handwaving_d1_uncomp.avi";
+    vid.exportName = "handwaving_person15_s1";
+    vid.category = "handwaving";
     listVideos.push_back(vid);
-    vid.nameVideo = "15_jogging_d1";
-    vid.exportName = "jogging";
-    vid.id_activity = 3;
+    vid.nameVideo = "data/person15_jogging_d1_uncomp.avi";
+    vid.exportName = "jogging_person15_s1";
+    vid.category = "jogging";
     listVideos.push_back(vid);
-    vid.nameVideo = "15_walking_d1";
-    vid.exportName = "walking";
-    vid.id_activity = 4;
+    vid.nameVideo = "data/person15_walking_d1_uncomp.avi";
+    vid.exportName = "walking_person15_s1";
+    vid.category = "walking";
     listVideos.push_back(vid);
-    vid.nameVideo = "15_boxing_d1";
-    vid.exportName = "boxing";
-    vid.id_activity = 5;
+    vid.nameVideo = "data/person15_running_d1_uncomp.avi";
+    vid.exportName = "boxing_person15_s1";
+    vid.category = "running";
     listVideos.push_back(vid);
-    vid.nameVideo = "01_boxing_d1";
-    vid.exportName = "test_boxing";
-    vid.id_activity = 5;
+    vid.nameVideo = "data/person15_boxing_d1_uncomp.avi";
+    vid.exportName = "test_boxing_person15_s1";
+    vid.category = "boxing";
     listVideos.push_back(vid);*/
 
     for(int i=0; i<listVideos.size(); i++)
@@ -146,14 +147,14 @@ int run_all_data(string video_name, string activity, string id_activity) {
     int videoHeight = (capture.get(CV_CAP_PROP_FRAME_HEIGHT));
     Mat image;
     vector<Mat> frames;
-    for (int64 frameStep = 20; frameStep < videoLength; frameStep += step) {
+    for (int64 frameStep = 1; frameStep < videoLength; frameStep += step) {
         capture.set(CV_CAP_PROP_POS_FRAMES, frameStep);
         capture.read((image));
         if (image.empty())
             std::cerr << "Error processing file. Can't read frame " << frameStep
             << "from video %s" << path;
         
-        if(frames.size()<N_FRAMES_TEST){
+        /*if(frames.size()<N_FRAMES_TEST){
             Mat img = image.clone();
             Mat blur;
             GaussianBlur(img, blur, Size(5,5), 0, 0 );
@@ -163,7 +164,14 @@ int run_all_data(string video_name, string activity, string id_activity) {
         else
         {
             break;
-        }
+        }*/
+
+        Mat img = image.clone();
+        Mat blur;
+        GaussianBlur(img, blur, Size(5,5), 0, 0 );
+        frames.push_back(blur);
+        save_frame("data/frames/",to_string(frameStep),img);
+
         imshow("imagen", image);
         waitKey(1);
     }
@@ -187,9 +195,9 @@ int run_all_data(string video_name, string activity, string id_activity) {
         }
     }*/
     
-    cout<<"frames Size: "<<frames.size()<<endl;
+    /*cout<<"frames Size: "<<frames.size()<<endl;
     cout<<"video Height: "<<videoHeight<<endl;
-    cout<<"video Width: "<<videoWidth<<endl;
+    cout<<"video Width: "<<videoWidth<<endl;*/
     //cout<<"N cubos: "<<cubos.size()<<endl;
     
     vector<Point2f> points[2];
@@ -199,6 +207,10 @@ int run_all_data(string video_name, string activity, string id_activity) {
     // osf.plot_angles_magnitudes();
 
     cout<<"total magnitudes pair: "<<osf.angles_magnitudes.size()<<endl;
+    cout << "time per cuboides: " << osf.angles_magnitudes.size()/5 << endl;
+    int longitud_cuboid = osf.angles_magnitudes.size()/5-1;
+    int t_per_cuboid = 10;
+    int t_overlapping = 5;
 
     //export_mat_excel(osf.angles_magnitudes[1].angles, "angles");
     //export_mat_excel(osf.angles_magnitudes[1].magnitudes, "magnitudes");
@@ -211,26 +223,63 @@ int run_all_data(string video_name, string activity, string id_activity) {
 
     vector<Mat> listCuboidAngles;
     vector<Mat> listCuboidMagnitudes;
+    
+    vector<vector<Mat>> listAllCuboidAngles;
+    vector<vector<Mat>> listAllCuboidMagnitudes;
 
     Mat zeros = Mat::zeros(size_frame, size_frame, CV_32FC1);
     Mat sampling_angles, sampling_magnitudes;
 
     //for(int i=0; i<osf.angles_magnitudes.size(); i++)
     //generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes[i].angles, osf.angles_magnitudes[i].magnitudes,size_frame);
-    generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes,size_frame);
+//    generate_cuboids(listCuboidAngles, listCuboidMagnitudes, osf.angles_magnitudes,size_frame);
+
+    for(int i=0; i<longitud_cuboid; i++)
+    {
+        generate_cuboids(listAllCuboidAngles, listAllCuboidMagnitudes, osf.angles_magnitudes,size_frame, i*t_overlapping, i*t_overlapping+t_per_cuboid);
+    }    
+        
+
    // export_mat_excel(osf.angles_magnitudes[3].angles, "cuboid_angle");
 
     //cout << listCuboidAngles.size() << endl;
     //cout << listCuboidMagnitudes.size() << endl;
 
-    for(int i=0; i<osf.angles_magnitudes.size(); i++)
+    /*for(int i=0; i<osf.angles_magnitudes.size(); i++)
     {
         export_mat_excel_int(osf.angles_magnitudes[i].angles, "frame_angles_"+to_string(i));
         export_mat_excel_int(osf.angles_magnitudes[i].magnitudes, "frame_magnitude_"+to_string(i));
+    }*/
+
+    //cout << "scangels: "<< listAllCuboidAngles.size() << endl;
+    //cout << "scmagnitudes: "<< listAllCuboidMagnitudes.size() << endl;
+
+    for(int i=0; i<listAllCuboidAngles.size(); i++)
+    {
+        for(int j=0; j<listAllCuboidAngles[i].size(); j++)
+        {
+            for(int orientation = 0; orientation<4; orientation++)
+            {
+                Mat co_ocurrence_angle = co_ocurrence_magnitud(listAllCuboidAngles[i][j], orientation);
+                Mat co_ocurrence_magnitude = co_ocurrence_magnitud(listAllCuboidMagnitudes[i][j], orientation);
+
+    //Normalize matrix to input to haralick
+                Mat co_ocurrence_angle_n = normalize_matriz(co_ocurrence_angle);
+                Mat co_ocurrence_magnitude_n = normalize_matriz(co_ocurrence_magnitude);
+                
+    //Step 4 Extract haralick features
+                Mat haralick_angles = har.calculate(co_ocurrence_angle_n);
+                //export_mat_excel(haralick_angles,"haralick_n");
+                Mat haralick_magnitudes = har.calculate(co_ocurrence_magnitude_n);
+
+                list_haralick_angles.push_back(haralick_angles);
+                list_haralick_magnitudes.push_back(haralick_magnitudes);   
+            }
+        }
     }
     
 //Step 3 Calculate de co_ocurrence matrix of angles and magnitudes
-    for(int i=0; i<listCuboidAngles.size(); i++)
+    /*for(int i=0; i<listCuboidAngles.size(); i++)
     {
         //export_mat_excel_int(listCuboidAngles[i], "cuboid_angle_"+to_string(i));
         //export_mat_excel_int(listCuboidMagnitudes[i], "cuboid_magnitude_"+to_string(i));
@@ -240,15 +289,6 @@ int run_all_data(string video_name, string activity, string id_activity) {
         //cout << "co_ocurrence" << endl;
             Mat co_ocurrence_angle = co_ocurrence_magnitud(listCuboidAngles[i], orientation);
             
-            /*if(i < 9)
-                export_mat_excel_float(co_ocurrence_angle,"boxing_co_ocurrence_angle_orientation_"+to_string(orientation)+"_cuboid_00"+to_string(i));
-            else
-                if(i < 100)
-                    export_mat_excel_float(co_ocurrence_angle,"boxing_co_ocurrence_angle_orientation_"+to_string(orientation)+"_cuboid_0"+to_string(i));
-                else
-                    export_mat_excel_float(co_ocurrence_angle,"boxing_co_ocurrence_angle_orientation_"+to_string(orientation)+"_cuboid_"+to_string(i));*/
-
-
             Mat co_ocurrence_magnitude = co_ocurrence_magnitud(listCuboidMagnitudes[i], orientation);
 
 //Normalize matrix to input to haralick
@@ -256,15 +296,7 @@ int run_all_data(string video_name, string activity, string id_activity) {
             Mat co_ocurrence_magnitude_n = normalize_matriz(co_ocurrence_magnitude);
 
             //export_mat_excel(listCuboidAngles[0], "cuboid_angle");
-            /*if(i < 9)
-                export_mat_excel_float(co_ocurrence_angle_n,"norm_boxing_co_ocurrence_angle_orientation_"+to_string(orientation)+"_cuboid_00"+to_string(i));
-            else
-                if(i < 100)
-                    export_mat_excel_float(co_ocurrence_angle_n,"norm_boxing_co_ocurrence_angle_orientation_"+to_string(orientation)+"_cuboid_0"+to_string(i));
-                else
-                    if(i < 1000)
-                        export_mat_excel_float(co_ocurrence_angle_n,"norm_boxing_co_ocurrence_angle_orientation_"+to_string(orientation)+"_cuboid_"+to_string(i));*/
-        //cout << "haralick" << endl;
+            
 //Step 4 Extract haralick features
             Mat haralick_angles = har.calculate(co_ocurrence_angle_n);
             //export_mat_excel(haralick_angles,"haralick_n");
@@ -273,7 +305,7 @@ int run_all_data(string video_name, string activity, string id_activity) {
             list_haralick_angles.push_back(haralick_angles);
             list_haralick_magnitudes.push_back(haralick_magnitudes);   
         }
-    }
+    }*/
 
     //print_haralick_features(haralick_angles);
     //print_haralick_features(haralick_magnitudes);
@@ -408,6 +440,40 @@ void generate_cuboids(vector<Mat> &listCuboidAngles, vector<Mat> &listCuboidMagn
     }
 }
 
+void generate_cuboids(vector<vector<Mat>> &listAllCuboidAngles, vector<vector<Mat>> &listAllCuboidMagnitudes, vector<Angles_Magnitude> frames_angles_magnitudes,int frame_size, int fr_start, int fr_end)
+{
+    //cout << "-> " << fr_start << " - " << fr_end << endl;
+    vector<Mat> listCuboidAngles;
+    vector<Mat> listCuboidMagnitudes;
+
+    for(int h=0; h<(frames_angles_magnitudes[0].angles.rows/frame_size); h++)
+    {       
+        for(int k=0; k<(frames_angles_magnitudes[0].angles.cols/frame_size); k++)
+        {   
+            //for(int fr=0; fr<frames_angles_magnitudes.size(); fr++)
+            for(int fr=fr_start; fr<fr_end; fr++)
+            {
+                Mat angles_cuboid = Mat::zeros(frame_size, frame_size, CV_32FC1);
+                Mat magnitude_cuboid = Mat::zeros(frame_size, frame_size, CV_32FC1);
+                for(int i=h*frame_size; i<(h+1)*frame_size; i++)
+                {
+                    for(int j=k*frame_size; j<(k+1)*frame_size; j++)
+                    {
+                        angles_cuboid.at<float>(i-h*frame_size,j-k*frame_size) = frames_angles_magnitudes[fr].angles.at<float>(i,j);
+                        magnitude_cuboid.at<float>(i-h*frame_size,j-k*frame_size) = frames_angles_magnitudes[fr].magnitudes.at<float>(i,j);
+                    }
+                }
+                listCuboidAngles.push_back(angles_cuboid);
+                listCuboidMagnitudes.push_back(magnitude_cuboid);
+            }
+        }
+    }
+
+    listAllCuboidAngles.push_back(listCuboidAngles);
+    listAllCuboidMagnitudes.push_back(listCuboidMagnitudes);
+
+}
+
 Mat normalize_matriz(Mat matriz)
 {
     int sum=0;
@@ -424,3 +490,11 @@ Mat normalize_matriz(Mat matriz)
     else
         return matriz;
 }
+
+ /*if(i < 9)
+                export_mat_excel_float(co_ocurrence_angle,"boxing_co_ocurrence_angle_orientation_"+to_string(orientation)+"_cuboid_00"+to_string(i));
+            else
+                if(i < 100)
+                    export_mat_excel_float(co_ocurrence_angle,"boxing_co_ocurrence_angle_orientation_"+to_string(orientation)+"_cuboid_0"+to_string(i));
+                else
+                    export_mat_excel_float(co_ocurrence_angle,"boxing_co_ocurrence_angle_orientation_"+to_string(orientation)+"_cuboid_"+to_string(i));*/

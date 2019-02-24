@@ -202,7 +202,7 @@ void OpticalFlowSet::select_important_pixels(vector<Point2f> &vecPoints, Mat fra
         }
     }
   }
-  cout<<"real_pixels: "<<frameDif.rows*frameDif.cols<<", final pixels: "<<vecPoints.size()<<endl;
+  //cout<<"real_pixels: "<<frameDif.rows*frameDif.cols<<", final pixels: "<<vecPoints.size()<<endl;
 }
 
 void OpticalFlowSet::create_angles_magnitudes_from_LK(vector<Point2f> &vecPoints,vector<Point2f> &initial_positions,Angles_Magnitude & AMmat) {
