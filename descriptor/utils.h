@@ -2,9 +2,13 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include "fstream"
-#include<iostream>
+#include <iostream>
+#include <limits.h>
 using namespace cv;
 using namespace std;
+
+float max_float = SHRT_MAX;
+float min_float = SHRT_MIN;
 
 void save_frame(String data_path, string name,Mat& frame){
     string s = data_path +name+".jpg";
@@ -99,6 +103,7 @@ void export_mat_excel_int(Mat img, string name)
 //480 features
 void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, string name, string activity)
 {
+    cout << "max: " << max_float << endl;
     ofstream myfile;
     myfile.open("data_generated/"+name+".csv");
     //myfile << "angles" << "," << "magnitudes" << "," << "activity" << "\n";
@@ -113,23 +118,51 @@ void export_listmat_excel(vector<Mat> list_angles,vector<Mat> list_magnitudes, s
             myfile << "activity" << "\n";
     }
 
+    double suma =0;
+    vector<float> angles;
+    vector<float> magnitudes;
     for(int i=0; i<list_angles.size(); i++)
     {
         for(int j=0; j<list_angles[i].cols; j++)
         {
+            suma += ((Scalar)list_angles[i].at<float>(0, j))[0]+((Scalar)list_magnitudes[i].at<float>(0, j))[0];
+
+            angles.push_back(((Scalar)list_angles[i].at<float>(0, j))[0]);
+            magnitudes.push_back(((Scalar)list_magnitudes[i].at<float>(0, j))[0]);
+
+            
             //-4.34882e-06
            // if(list_angles[i].at<float>(0, j) != 0 && list_angles[i].at<float>(0, j) > -0.000004)
             //{
                 //cout << ((Scalar)list_angles[i].at<float>(0, j))[0]*1000 << endl;
 
-                myfile << ((Scalar)list_angles[i].at<float>(0, j))[0] << ",";
-                myfile << ((Scalar)list_magnitudes[i].at<float>(0, j))[0] << ",";
+                //myfile << ((Scalar)list_angles[i].at<float>(0, j))[0] << ",";
+                //myfile << ((Scalar)list_magnitudes[i].at<float>(0, j))[0] << ",";
             //}
         }
+
         if((i+1)%40 == 0)
         {   
-            myfile << activity;
-            myfile << "\n";
+            //cout << "-->" << angles.size()<< endl;
+
+            if(suma != 0)
+            {
+                for(int k=0; k<angles.size(); k++)
+                {
+                    myfile << angles[k] << ",";
+                    myfile << magnitudes[k] << ",";
+                //myfile << ((Scalar)list_angles[i].at<float>(0, k))[0] << ",";
+                //myfile << ((Scalar)list_magnitudes[i].at<float>(0, k))[0] << ",";
+             
+                }
+                myfile << activity;
+                myfile << "\n";
+            }
+
+            suma = 0;
+            angles.clear();
+            magnitudes.clear();
+
         }
     }
     myfile.close();
